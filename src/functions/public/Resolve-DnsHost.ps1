@@ -7,7 +7,7 @@
         This function resolves a hostname to an IP address using the System.Net.Dns class.
 
         .EXAMPLE
-        Resolve-Host -HostName 'google.com'
+        Resolve-DnsHost -HostName 'google.com'
 
         .OUTPUTS
         [System.Net.IPHostEntry](https://learn.microsoft.com/en-us/dotnet/api/system.net.iphostentry?view=net-8.0)
@@ -20,5 +20,5 @@
         [string] $Name
     )
 
-    [System.Net.Dns]::Resolve($Name)
+    [System.Net.Dns]::GetHostEntry($Name)
 }
