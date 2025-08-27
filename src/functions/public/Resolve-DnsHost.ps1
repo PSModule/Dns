@@ -20,5 +20,10 @@
         [string] $Name
     )
 
-    [System.Net.Dns]::GetHostEntry($Name)
+    try {
+        [System.Net.Dns]::GetHostEntry($Name)
+    } catch {
+        Write-Debug "Failed to resolve DNS for [$Name]"
+        Write-Debug $_
+    }
 }
