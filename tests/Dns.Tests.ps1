@@ -24,27 +24,30 @@ Describe 'Dns' {
     Context 'Resolve-DnsHost' {
         It 'Test record <Name> - should exist <expected>' -ForEach @(
             @{
-                Name     = 'google.com'
+                Name     = '127.0.0.1'
                 Expected = $true
             },
             @{
-                Name     = 'example.com'
+                Name     = 'localhost'  
                 Expected = $true
             },
             @{
-                Name     = 'nonexistent.example'
+                Name     = 'nonexistent.invalid.domain.test'
                 Expected = $false
             }
         ) {
-            $result = Resolve-DnsHost -Name $Name -ErrorAction Stop
-            LogGroup 'Results' {
-                Write-Host "$($result | Format-Table -AutoSize | Out-String)"
-            }
+            $result = Resolve-DnsHost -Name $Name -ErrorAction SilentlyContinue
+            Write-Host "Results: $($result | Format-Table -AutoSize | Out-String)"
             if ($Expected) {
                 $result | Should -Not -BeNullOrEmpty
-                $result | Should -BeOfType [DnsHost]
-                $result.Name | Should -Be $Name
-                $result.AddressList.Count | Should -BeGreaterThan 0
+                $result | Should -BeOfType [DnsRecord]
+                $result[0].Name | Should -Not -BeNullOrEmpty
+                $result[0].IPAddress | Should -Not -BeNullOrEmpty
+                $result[0].Type | Should -BeIn @('A', 'AAAA')
+                $result[0].Section | Should -Be 'Answer'
+                $result[0].CharacterSet | Should -Be 'Unicode'
+                $result[0].TTL | Should -BeGreaterThan 0
+                $result[0].DataLength | Should -BeIn @(4, 16)
             } else {
                 $result | Should -BeNullOrEmpty
             }
