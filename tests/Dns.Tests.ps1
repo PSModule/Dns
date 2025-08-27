@@ -20,6 +20,10 @@ Describe 'Dns' {
             },
             @{
                 Name     = 'example.com'
+                Expected = $true
+            },
+            @{
+                Name     = 'nonexistent.example'
                 Expected = $false
             }
         ) {
