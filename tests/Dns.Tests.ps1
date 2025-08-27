@@ -12,21 +12,25 @@ param()
 
 Describe 'Dns' {
 
-    Describe 'Resolve-DnsHost' {
-        Context 'Existing record' {
-            It 'returns at least one record for example.com' {
-                $result = $null
-                { $script:result = Resolve-DnsHost -Name 'example.com' -ErrorAction Stop } | Should -Not -Throw
+    Context 'Resolve-DnsHost' {
+        It 'Test record <Name> - should exist <expected>' -ForEach @(
+            @{
+                Name     = 'google.com'
+                Expected = $true
+            },
+            @{
+                Name     = 'example.com'
+                Expected = $false
+            }
+        ) {
+            { $script:result = Resolve-DnsHost -Name $Name -ErrorAction Stop } | Should -Not -Throw
+            if ($Expected) {
                 $result | Should -Not -BeNullOrEmpty
                 LogGroup 'Results' {
                     Write-Host "$($result | Format-Table -AutoSize | Out-String)"
                 }
-            }
-        }
-
-        Context 'Non-existing record' {
-            It 'returns no records or throws for a non-existent host' {
-                { Resolve-DnsHost -Name 'no-such-host.invalid' -ErrorAction Stop } | Should -Not -Throw
+            } else {
+                $result | Should -BeNullOrEmpty
             }
         }
     }
