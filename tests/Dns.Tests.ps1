@@ -23,12 +23,15 @@ Describe 'Dns' {
                 Expected = $false
             }
         ) {
-            { $script:result = Resolve-DnsHost -Name $Name -ErrorAction Stop } | Should -Not -Throw
+            $result = Resolve-DnsHost -Name $Name -ErrorAction Stop
+            LogGroup 'Results' {
+                Write-Host "$($result | Format-Table -AutoSize | Out-String)"
+            }
             if ($Expected) {
                 $result | Should -Not -BeNullOrEmpty
-                LogGroup 'Results' {
-                    Write-Host "$($result | Format-Table -AutoSize | Out-String)"
-                }
+                $result | Should -BeOfType [DnsHost]
+                $result.Name | Should -Be $Name
+                $result.AddressList.Count | Should -BeGreaterThan 0
             } else {
                 $result | Should -BeNullOrEmpty
             }

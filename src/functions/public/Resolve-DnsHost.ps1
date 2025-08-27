@@ -10,18 +10,23 @@
         Resolve-DnsHost -HostName 'google.com'
 
         .OUTPUTS
-        [System.Net.IPHostEntry](https://learn.microsoft.com/en-us/dotnet/api/system.net.iphostentry?view=net-8.0)
+        [DnsHost]
     #>
-    [OutputType([System.Net.IPHostEntry])]
+    [OutputType([DnsHost])]
     [CmdletBinding()]
     param (
         # The name of the host to resolve
         [Parameter(Mandatory)]
-        [string] $Name
+        [string] $Name,
+
+        # The address family to use for the DNS resolution
+        [Parameter()]
+        [System.Net.Sockets.AddressFamily] $AddressFamily = 'Unspecified'
     )
 
     try {
-        [System.Net.Dns]::GetHostEntry($Name)
+        $entry = [System.Net.Dns]::GetHostEntry($Name, $AddressFamily)
+        return [DnsHost]::new($entry.HostName, $entry.Aliases, $entry.AddressList)
     } catch {
         Write-Debug "Failed to resolve DNS for [$Name]"
         Write-Debug $_
