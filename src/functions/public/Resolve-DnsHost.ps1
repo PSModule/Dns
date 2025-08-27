@@ -15,11 +15,10 @@
     [OutputType([System.Net.IPHostEntry])]
     [CmdletBinding()]
     param (
-        # The hostname to resolve
+        # The name of the host to resolve
         [Parameter(Mandatory)]
-        [Alias('IP', 'Address', 'Host', 'IPAddress', 'Destination')]
-        [string] $HostName
+        [string] $Name
     )
 
-    [System.Net.Dns]::Resolve($HostName)
+    [System.Net.Dns]::Resolve($Name)
 }
