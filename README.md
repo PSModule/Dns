@@ -19,7 +19,7 @@ Import-Module -Name Dns
 Resolve-DnsHost -Name 'example.com'
 ```
 
-On a successful lookup, returns a `DnsHost` object with the resolved host name, an alias (if any), and the list of IP addresses. If the host cannot be resolved, nothing is returned.
+On a successful lookup, returns a `DnsHost` object with the resolved hostname, an alias (if any), and the list of IP addresses. If the host cannot be resolved, nothing is returned.
 
 ### Example: Resolve only IPv4 addresses
 
