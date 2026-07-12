@@ -11,6 +11,24 @@ Install-PSResource -Name Dns
 Import-Module -Name Dns
 ```
 
+## Usage
+
+### Example: Resolve a hostname to its IP addresses
+
+```powershell
+Resolve-DnsHost -Name 'example.com'
+```
+
+Returns a `DnsHost` object with the resolved host name, any aliases, and the list of IP addresses.
+
+### Example: Resolve only IPv4 addresses
+
+Use `-AddressFamily` to limit the resolution to a specific address family:
+
+```powershell
+Resolve-DnsHost -Name 'example.com' -AddressFamily InterNetwork
+```
+
 ## Documentation
 
 Documentation is published at [psmodule.io/Dns](https://psmodule.io/Dns/).
@@ -19,9 +37,5 @@ Use PowerShell help and command discovery for module details:
 
 ```powershell
 Get-Command -Module Dns
-Get-Help <CommandName> -Examples
+Get-Help -Name Resolve-DnsHost -Examples
 ```
-
-## Contributing
-
-Issues and pull requests are welcome. Please use the repository issue tracker to report bugs, request features, or discuss improvements.
