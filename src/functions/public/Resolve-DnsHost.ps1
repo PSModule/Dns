@@ -5,14 +5,15 @@
 
         .DESCRIPTION
         This function resolves a hostname to an IP address using the System.Net.Dns class.
+        Returns detailed DNS record information similar to Windows' Resolve-DnsName.
 
         .EXAMPLE
-        Resolve-DnsHost -HostName 'google.com'
+        Resolve-DnsHost -Name 'google.com'
 
         .OUTPUTS
-        [DnsHost]
+        [DnsRecord[]]
     #>
-    [OutputType([DnsHost])]
+    [OutputType([DnsRecord[]])]
     [CmdletBinding()]
     param (
         # The name of the host to resolve
@@ -26,9 +27,18 @@
 
     try {
         $entry = [System.Net.Dns]::GetHostEntry($Name, $AddressFamily)
-        return [DnsHost]::new($entry.HostName, $entry.Aliases, $entry.AddressList)
+        $results = @()
+        
+        foreach ($address in $entry.AddressList) {
+            $recordType = if ($address.AddressFamily -eq 'InterNetwork') { 'A' } else { 'AAAA' }
+            $dnsRecord = [DnsRecord]::new($entry.HostName, $recordType, $address.ToString())
+            $results += $dnsRecord
+        }
+        
+        return $results
     } catch {
         Write-Debug "Failed to resolve DNS for [$Name]"
         Write-Debug $_
+        return @()
     }
 }
